@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AttaKhan AI Image Generator - Free</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    img {
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 AI Image Generator</h1>
+  <p>Prompt likhein (Urdu ya English):</p>
+  <input id="prompt" size="50" placeholder="e.g. Ek robot sheher mein tanha hai"/>
+  <br><br>
+  <button onclick="generateImage()">Generate Image</button>
+  <p id="status"></p>
+  <img id="image" />
+  <br>
+  <a id="downloadLink" download="ai-image.png" style="display:none;">⬇️ Download Image</a>
+
+  <script>
+    async function generateImage() {
+      const prompt = document.getElementById("prompt").value;
+      const status = document.getElementById("status");
+      const image = document.getElementById("image");
+      const download = document.getElementById("downloadLink");
+
+      status.innerText = "⏳ Generating image...";
+      image.src = "";
+      download.style.display = "none";
+
+      try {
+        const response = await fetch("https://replicate-api-proxy.glitch.me/stability-ai/stable-diffusion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await response.json();
+        image.src = data.image;
+        download.href = data.image;
+        download.style.display = "inline";
+        status.innerText = "✅ Image ready!";
+      } catch (e) {
+        status.innerText = "❌ Error generating image.";
+      }
+    }
+  </script>
+</body>
+</html>
